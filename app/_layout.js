@@ -1,0 +1,38 @@
+import { StatusBar, StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
+import { Stack } from 'expo-router'
+import { ThemeProvider } from '@react-navigation/native'
+import MyTheme from '../constants/MyTheme'
+import { StateProvider } from '../context/StateProvider'
+import { colors } from '../constants/colors'
+
+const Layout = () => {
+    const [selectedCity, setSelectedCity] = useState(null)
+    const [refresh, setRefresh] = useState(false)
+
+    return (
+
+        <StateProvider value={{ selectedCity, setSelectedCity, refresh, setRefresh }}>
+            <ThemeProvider value={MyTheme}>
+                <StatusBar />
+                <Stack
+                    screenOptions={{
+                        animation: "slide_from_right",
+                        headerShown: false,
+                        statusBarColor: colors.background,
+                    }}
+                >
+
+                    <Stack.Screen name='index' />
+                    <Stack.Screen name='search' />
+                    <Stack.Screen name='day' />
+
+                </Stack>
+            </ThemeProvider>
+        </StateProvider>
+    )
+}
+
+export default Layout
+
+const styles = StyleSheet.create({})
