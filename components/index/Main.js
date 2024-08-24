@@ -1,8 +1,8 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useStateContext } from '../../context/StateProvider'
 import { fetchData } from '../../utils/fetch'
-import { ActivityIndicator, IconButton, Subheading, Title, TouchableRipple } from 'react-native-paper'
+import { ActivityIndicator, Icon, IconButton, Subheading, Title, TouchableRipple } from 'react-native-paper'
 import { agruparPorDia } from '../../utils/weather'
 
 import DayOverview from './DayOverview'
@@ -11,6 +11,7 @@ import CurrentForecast from '../CurrentForecast'
 
 import JSONdata from '../../response_object.json'
 import { useRouter } from 'expo-router'
+import { colors } from '../../constants/colors'
 
 const Main = () => {
 
@@ -24,46 +25,47 @@ const Main = () => {
 
   useEffect(() => {
 
-    if (selectedCity) {
-
-      const agrupadosPorDia = agruparPorDia(JSONdata.meteogram.forecast.tabular.time)
-      const resultadoFinal = Object.values(agrupadosPorDia)
-
-      const x = resultadoFinal.map((day, i) => {
-        return {
-          weather: day,
-          title: formatearFecha(day[0]["@attributes"].from)
-        }
-      })
-      setDailyForecast(x)
-      setCurrentForecast(JSONdata.now)
-      setLoading(false)
-
-    }
-
     // if (selectedCity) {
-    //   setLoading(true)
 
-    //   fetchData(selectedCity)
-    //     .then(data => {
-    //       const agrupadosPorDia = agruparPorDia(data.meteogram.forecast.tabular.time)
-    //       const resultadoFinal = Object.values(agrupadosPorDia)
+    //   const agrupadosPorDia = agruparPorDia(JSONdata.meteogram.forecast.tabular.time)
+    //   const resultadoFinal = Object.values(agrupadosPorDia)
 
-    //       const x = resultadoFinal.map((day, i) => {
-    //         return {
-    //           weather: day,
-    //           title: formatearFecha(day[0]["@attributes"].from)
-    //         }
-    //       })
+    //   const x = resultadoFinal.map((day, i) => {
+    //     return {
+    //       weather: day,
+    //       title: formatearFecha(day[0]["@attributes"].from)
+    //     }
+    //   })
+    //   setDailyForecast(x)
+    //   setCurrentForecast(JSONdata.now)
+    //   setLoading(false)
 
-    //       setDailyForecast(x)
-    //       setCurrentForecast(data.now)
-
-
-    //     })
-    //     .catch(error => setError(error.message))
-    //     .finally(() => setLoading(false))
     // }
+
+    if (selectedCity) {
+      setLoading(true)
+
+      fetchData(selectedCity)
+        .then(data => {
+          const agrupadosPorDia = agruparPorDia(data.meteogram.forecast.tabular.time)
+          const resultadoFinal = Object.values(agrupadosPorDia)
+
+          const x = resultadoFinal.map((day, i) => {
+            return {
+              weather: day,
+              title: formatearFecha(day[0]["@attributes"].from),
+              date:day[0]["@attributes"].from
+            }
+          })
+
+          setDailyForecast(x)
+          setCurrentForecast(data.now)
+
+
+        })
+        .catch(error => setError(error.message))
+        .finally(() => setLoading(false))
+    }
 
   }, [selectedCity, refresh])
 
@@ -73,8 +75,11 @@ const Main = () => {
 
 
   if (loading)
-    return <ActivityIndicator size="large" color="white" style={{ marginTop: 100 }} />;
-
+    return (
+    <View style={s.loadingContainer}> 
+      <ActivityIndicator size={30} color="white" />
+    </View>
+    )
   return (
 
     <View style={s.container}>
@@ -88,6 +93,15 @@ const Main = () => {
       <CurrentForecast currentForecast={currentForecast} />
 
 
+
+      <TouchableRipple rippleColor="#51676d" borderless style={{ borderRadius: 12 }} onPress={() => push("satellite")}>
+        <View style={{ backgroundColor: colors.card, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 12, flexDirection: "row", alignItems: "center", gap: 5 }}>
+          <Icon source="satellite-variant" color="white" size={22} />
+          <Text style={{ color: "white", fontSize: 13 }}>Imagenes satelitales</Text>
+        </View>
+      </TouchableRipple>
+
+
       <View style={s.overviewContainer}>
         {
 
@@ -96,6 +110,8 @@ const Main = () => {
           ))
         }
       </View>
+
+
 
     </View>
 
@@ -107,6 +123,8 @@ export default Main
 const s = StyleSheet.create({
   container: {
     flexDirection: "column",
+    gap: 12,
+    marginBottom:200
   },
   header: {
     flexDirection: "row",
@@ -129,8 +147,12 @@ const s = StyleSheet.create({
   overviewContainer: {
     flexDirection: "column",
     gap: 12,
-
-
-
+  },
+  loadingContainer:{
+    flex:1,
+    justifyContent:"center",
+    alignItems:"center",
+    minHeight:Dimensions.get("window").height
   }
+
 })

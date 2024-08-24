@@ -1,18 +1,20 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { formatearFecha } from '../../utils/time'
-import { TouchableRipple, Card } from 'react-native-paper'
+import { formatHeaderDate, formatearFecha } from '../../utils/time'
+import { TouchableRipple, Card, Icon } from 'react-native-paper'
 import { colors } from '../../constants/colors'
 import { useRouter } from 'expo-router'
-import { findMinMaxTemperature } from '../../utils/weather'
+import { findMinMaxTemperature, getDropsArray, sumPrecipitation } from '../../utils/weather'
 
-const IMG_SIZE = 40
+const IMG_SIZE = 37
 
 const DayOverview = ({ dayData }) => {
 
     const { push } = useRouter()
     const [groups, setGroups] = useState(false)
     const maxMin = findMinMaxTemperature(dayData.weather)
+    const precipitation = sumPrecipitation(dayData.weather)
+    const date = formatHeaderDate(dayData.date.split("T")[0].replaceAll("-","/"))
 
     const arr = [
 
@@ -23,14 +25,7 @@ const DayOverview = ({ dayData }) => {
     ]
 
 
-
-
     useEffect(() => {
-
-
-
-
-
         // const x = dayData.weather.map((data) => {
         //     return {
         //         weather: data,
@@ -67,9 +62,9 @@ const DayOverview = ({ dayData }) => {
 
         <TouchableRipple
             rippleColor="#51676d"
-            onPress={() => { push("day") }}
+            onPress={() => push({pathname:"day",params: {forecastString:JSON.stringify(dayData.weather),date }})}
             borderless
-            style={{ borderRadius: 5 }}
+            style={{ borderRadius: 12 }}
         >
 
 
@@ -79,6 +74,13 @@ const DayOverview = ({ dayData }) => {
                 <View style={s.header}>
                     <View style={s.headerTop}>
                         <Text style={s.title}>{dayData.title}</Text>
+                        <View style={s.drops}>
+                            {
+                                getDropsArray(precipitation).map((elem, i) => (
+                                    <Icon key={i} source="water" size={13} color='#00b9f1' />
+                                ))
+                            }
+                        </View>
                     </View>
                     <View style={s.headerBottom}>
                         <Text style={s.bottomText}>Max: <Text style={s.max}>{maxMin.maxTemp}</Text>°C  </Text>
@@ -120,10 +122,10 @@ const s = StyleSheet.create({
     },
     header: {
         flexDirection: "column",
-        
+
     },
     title: {
-        fontWeight:"500",
+        fontWeight: "500",
         color: "white",
         fontSize: 18
     },
@@ -142,6 +144,7 @@ const s = StyleSheet.create({
     groupContainer: {
         flexDirection: "row",
         justifyContent: "space-around",
+        paddingVertical:6,
     },
     img: {
         width: IMG_SIZE,
@@ -151,28 +154,35 @@ const s = StyleSheet.create({
         fontSize: 12,
         color: "#b5b5b5"
     },
-    headerTop:{
-        
+    headerTop: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
     },
-    headerBottom:{
-        fontSize:12,
-        color:"grey",
-        flexDirection:"row",
-        gap:7
+    headerBottom: {
+        fontSize: 12,
+        color: "grey",
+        flexDirection: "row",
+        gap: 7
     },
-    min:{
-        fontSize:17,
-        fontWeight:"500",
-        color:"#00aaff",
+    min: {
+        fontSize: 17,
+        fontWeight: "500",
+        color: "#00aaff",
     },
-    max:{
-        fontSize:17,
-        fontWeight:"500",
-        color:"#ff0e12"
+    max: {
+        fontSize: 17,
+        fontWeight: "500",
+        color: "#ff0e12"
     },
-    bottomText:{
-        fontSize:12,
-        color:"grey"
+    bottomText: {
+        fontSize: 12,
+        color: "grey"
+    },
+    drops: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 0
     }
 
 })

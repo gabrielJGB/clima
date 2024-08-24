@@ -5,7 +5,6 @@ import { formatHeaderDate } from '../utils/time';
 
 const CurrentForecast = ({ currentForecast }) => {
 
-  console.log(currentForecast.cc);
 
   const formatWind = (cc) => {
 
@@ -16,26 +15,48 @@ const CurrentForecast = ({ currentForecast }) => {
 
   }
 
+  const checkDate = (fecha, hora) => {
+
+    const now = new Date();
+    const fechaHora = new Date(`${fecha} ${hora}`);
+    const diferenciaEnMilisegundos = now - fechaHora;
+    const dosHorasEnMilisegundos = 2 * 60 * 60 * 1000;
+    return diferenciaEnMilisegundos > dosHorasEnMilisegundos;
+  }
+
+  const isOutdated = checkDate(currentForecast.cc.date, currentForecast.cc.time)
 
   return (
-    <View style={s.container}>
-      <Text style={s.date}>{formatHeaderDate(currentForecast.cc.date)}</Text>
+    <>
+      {
+        currentForecast.cc.date != "1969/12/31" ?
 
-      <View style={s.data}>
-        <View style={s.left}>
-          <Text style={s.temp}>{currentForecast.cc.temp}°C</Text>
-          <Text style={s.stemp}>ST: {currentForecast.cc.st}°C</Text>
-          <Text style={s.stemp}>Hum: {currentForecast.cc.hmid}%</Text>
-          <Text style={s.stemp}>Viento: {formatWind(currentForecast.cc)} </Text>
-          <Text style={[s.stemp, { marginTop: 5 }]}>Actualizado a las {currentForecast.cc.time}</Text>
-        </View>
+          <View style={s.container}>
+            <Text style={s.date}>{formatHeaderDate(currentForecast.cc.date)}</Text>
 
-        <View style={s.right}>
-          <Image source={{ uri: `https://www.meteobahia.com.ar/imagenes/new/${currentForecast.cc.icon}.png` }} style={s.img} />
-          <Text style={s.condition}>{currentForecast.cc.condition}</Text>
-        </View>
-      </View>
-    </View>
+            <View style={s.data}>
+              <View style={s.left}>
+                <Text style={s.temp}>{currentForecast.cc.temp}°C</Text>
+                <Text style={s.stemp}>ST: {currentForecast.cc.st}°C</Text>
+                <Text style={s.stemp}>Hum: {currentForecast.cc.hmid}%</Text>
+                <Text style={s.stemp}>Viento: {formatWind(currentForecast.cc)} </Text>
+                <Text style={[{ fontSize: 10, fontStyle: "italic", marginTop: 5, color: (isOutdated ? "#b32828" : colors.text100) }]}>Actualizado a las {currentForecast.cc.time}</Text>
+              </View>
+
+              <View style={s.right}>
+                <Image source={{ uri: `https://www.meteobahia.com.ar/imagenes/new/${currentForecast.cc.icon}.png` }} style={s.img} />
+                <Text style={s.condition}>{currentForecast.cc.condition}</Text>
+              </View>
+            </View>
+          </View>
+          :
+          <View style={s.errorContainer}>
+            <Image source={{uri:"https://www.meteobahia.com.ar/imagenes/new/nodisponible.png"}} style={s.img} />
+            <Text style={s.error}>Estación meteorológica fuera de linea</Text>
+          </View>
+
+      }
+    </>
   )
 }
 
@@ -48,7 +69,19 @@ const s = StyleSheet.create({
     padding: 12,
     borderRadius: 12,
     backgroundColor: colors.card,
-    marginVertical: 10,
+
+  },
+  errorContainer:{
+    flexDirection:"row",
+    alignItems:"center",
+    gap:7,
+    borderRadius: 12,
+    padding:18,
+    backgroundColor: colors.card,
+  },
+  error:{
+    fontSize:13,
+    color:colors.text
   },
   data: {
     flexDirection: "row",
@@ -71,17 +104,19 @@ const s = StyleSheet.create({
   },
   stemp: {
     fontSize: 10,
+    fontWeight: "500",
+
     color: colors.text100,
   },
   date: {
     textAlign: "center",
     color: colors.text100,
-    fontWeight:"500",
+    fontWeight: "500",
   },
   condition: {
-    
+
     fontSize: 14,
-    textAlign:"center",
+    textAlign: "center",
     color: colors.text,
   },
   img: {

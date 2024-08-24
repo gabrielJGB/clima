@@ -1,5 +1,6 @@
 export const  formatearFecha = (fechaString) => {
     const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    
     const fecha = new Date(fechaString);
     const hoy = new Date();
     
@@ -9,6 +10,7 @@ export const  formatearFecha = (fechaString) => {
 
     const diaSemana = diasSemana[fecha.getDay()];
     const diaMes = fecha.getDate();
+    
 
     if (diferenciaDias === 0) {
         return `Hoy, ${diaSemana.toLowerCase()} ${diaMes}`;

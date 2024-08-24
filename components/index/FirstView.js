@@ -35,7 +35,6 @@ const s = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        marginTop:150
     },
     buttonContent: {
         padding: 7,

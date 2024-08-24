@@ -21,7 +21,7 @@ export const fetchData = async (city) => {
         const now = res2Text.replace("callback", "").replace(";", "").slice(1, -1)
 
 
-        console.log(meteogram);
+        
 
         return {
             meteogram: JSON.parse(meteogram),

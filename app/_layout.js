@@ -24,8 +24,9 @@ const Layout = () => {
                 >
 
                     <Stack.Screen name='index' />
-                    <Stack.Screen name='search' />
-                    <Stack.Screen name='day' />
+                    <Stack.Screen name='search' options={{statusBarColor:colors.card}}/>
+                    <Stack.Screen name='satellite' options={{statusBarColor:"#0f0f0f"}} />
+                    <Stack.Screen name='day' options={{statusBarColor:"#0f0f0f"}}/>
 
                 </Stack>
             </ThemeProvider>

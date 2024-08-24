@@ -50,10 +50,9 @@ const SearchPage = () => {
         left={<TextInput.Icon icon="arrow-left" color="grey" onPress={() => back()} />}
         style={{ backgroundColor: colors.card }}
         textColor='white'
-        placeholderTextColor='grey'
-        enablesReturnKeyAutomatically
-         
+        placeholderTextColor='grey' 
         onChangeText={text => setText(text)}
+        
       />
 
       <ScrollView>
@@ -63,7 +62,8 @@ const SearchPage = () => {
               <TouchableRipple
                 key={i}
                 rippleColor="white"
-                style={{ borderRadius: 7 ,backgroundColor: "#246e99",}}
+                borderless
+                style={{ borderRadius: 7 }}
                 onPress={() => {
                   saveCity(result.code)
                   setSelectedCity(result.code)
@@ -93,6 +93,7 @@ export default SearchPage
 const s = StyleSheet.create({
   container: {
     flexDirection: "column",
+    
 
   },
   results: {
@@ -105,6 +106,7 @@ const s = StyleSheet.create({
   result: {
     flexDirection: "row",
     alignItems: "center",
+    backgroundColor: "#246e99",
     gap: 7,
     borderRadius: 6,
     paddingHorizontal: 7,
