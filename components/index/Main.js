@@ -9,7 +9,7 @@ import DayOverview from './DayOverview'
 import { formatearFecha } from '../../utils/time'
 import CurrentForecast from '../CurrentForecast'
 
-import JSONdata from '../../response_object.json'
+
 import { useRouter } from 'expo-router'
 import { colors } from '../../constants/colors'
 

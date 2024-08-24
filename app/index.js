@@ -17,7 +17,7 @@ export default function Page() {
 
     try {
       const city = await AsyncStorage.getItem('city');
-      await removeCity()  
+      
 
       if (city != null) {
 

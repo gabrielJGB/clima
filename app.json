@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "clima-app",
+    "name": "Clima",
     "slug": "clima-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,13 +19,22 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#16181a"
-      }
+      },
+      "package": "com.gabriel_1.climaapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "4d999b5c-05b8-46d2-b24c-75a2b4e9ecd8"
+      }
+    }
   }
 }
