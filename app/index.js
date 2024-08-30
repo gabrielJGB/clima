@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, Linking, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FirstView from "../components/index/FirstView";
 import Main from "../components/index/Main";
 import { useStateContext } from "../context/StateProvider";
-import { removeCity, saveCity } from "../utils/storage";
+
 
 export default function Page() {
 
 
-  const { selectedCity, setSelectedCity,setRefresh } = useStateContext()
+  const { selectedCity, setSelectedCity, setRefresh } = useStateContext()
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,7 +17,7 @@ export default function Page() {
 
     try {
       const city = await AsyncStorage.getItem('city');
-      
+
 
       if (city != null) {
 
@@ -47,7 +47,7 @@ export default function Page() {
 
   return (
     <ScrollView refreshControl={
-      <RefreshControl refreshing={false} onRefresh={()=>setRefresh(prev=>!prev)} />
+      <RefreshControl refreshing={false} onRefresh={() => setRefresh(prev => !prev)} />
     }
     >
       <View style={s.container}>
@@ -64,7 +64,9 @@ export default function Page() {
       </View>
       {
         selectedCity &&
-          <Text style={s.credits}>{"Fuente: www.meteobahia.com.ar"}</Text>
+        <Text onPress={() => { Linking.openURL("https://www.meteobahia.com.ar") }} style={s.credits}>
+          Fuente: <Text style={[s.credits,{textDecorationLine:"underline"}]}> www.meteobahia.com.ar</Text>
+        </Text>
       }
     </ScrollView>
   );
@@ -72,19 +74,20 @@ export default function Page() {
 
 const s = StyleSheet.create({
   container: {
-    minHeight:Dimensions.get("window").height,
+    minHeight: Dimensions.get("window").height,
     marginHorizontal: 5,
-    
+
 
   },
-  credits:{
-    fontSize:13,
-    fontWeight:"500",
-    width:"100%",
-    position:"absolute",
-    bottom:5,
-    textAlign:"center",
-    color:"#303435"
+  credits: {
+    fontSize: 16,
+    fontWeight: "500",
+    width: "100%",
+    position: "absolute",
+    padding: 7,
+    bottom: 0,
+    textAlign: "center",
+    color: "#00578d"
   }
 
 });

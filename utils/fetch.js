@@ -1,35 +1,29 @@
-const baseURL = "https://api.allorigins.win/raw?url=https://www.meteobahia.com.ar/jsonp.php"
+import { XMLParser } from 'fast-xml-parser';
 
-const headers = {
-    "headers": {
-        "sec-fetch-site": "none",
-        "sec-fetch-user": "?1",
-    }
-}
+// const proxyURL = "https://api.allorigins.win/raw?url="
+const proxyURL = "https://corsproxy.io/?"
+const req = {"cache":"no-store"}
 
 
+const convertXMLToJSON = (xml) => {
+    const parser = new XMLParser({
+        ignoreAttributes: false,
+    });
+    const json = parser.parse(xml);
+    return json;
+};
 
-export const fetchData = async (city) => {
 
+export const fetchXML = async (url) => {
+    
     try {
-        const res1 = await fetch(`${baseURL}?url=https://meteobahia.com.ar/scripts/meteogramas/${city}.xml`, headers)
-        const res1Text = await res1.text()
-        const meteogram = res1Text.replace("callback", "").replace(";", "").slice(1, -1)
-
-        const res2 = await fetch(`${baseURL}?url=https://meteobahia.com.ar/scripts/xml/now-${city}.xml`, headers)
-        const res2Text = await res2.text()
-        const now = res2Text.replace("callback", "").replace(";", "").slice(1, -1)
-
-
-        
-
-        return {
-            meteogram: JSON.parse(meteogram),
-            now: JSON.parse(now)
-        }
-
+        const res = await fetch(`${proxyURL}${encodeURIComponent(url)}?_=${new Date().getTime()}`)
+        const XMLdata = await res.text()
+        const JSONdata = convertXMLToJSON(XMLdata)
+        return JSONdata
 
     } catch (error) {
-        throw error;
+        throw error
     }
+
 }

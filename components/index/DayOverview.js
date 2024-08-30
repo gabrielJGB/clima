@@ -39,7 +39,7 @@ const DayOverview = ({ dayData }) => {
 
         let groups = []
         arr.forEach((elem, i) => {
-            let data = dayData.weather.find(item => item["@attributes"].from.split("T")[1] === elem.time)
+            let data = dayData.weather.find(item => item["@_from"].split("T")[1] === elem.time)
             if (data != undefined)
                 groups.push({
                     time: elem.time,
@@ -61,10 +61,12 @@ const DayOverview = ({ dayData }) => {
 
 
         <TouchableRipple
-            rippleColor="#51676d"
+            
+            rippleColor={"white"}
             onPress={() => push({pathname:"day",params: {forecastString:JSON.stringify(dayData.weather),date }})}
+            unstable_pressDelay={80}
+            style={{ borderRadius: 12}}
             borderless
-            style={{ borderRadius: 12 }}
         >
 
 
@@ -93,9 +95,9 @@ const DayOverview = ({ dayData }) => {
                         groups.map((group, i) => (
                             <View style={s.hour} key={i}>
                                 <View style={s.img}>
-                                    <Image source={{ uri: `https://www.meteobahia.com.ar/imagenes/new/${group.data.symbol["@attributes"].number}.png` }} style={s.img} />
+                                    <Image source={{ uri: `https://www.meteobahia.com.ar/imagenes/new/${group.data.symbol["@_number"]}.png` }} style={s.img} />
                                 </View>
-                                <Text style={s.temp}>{group.data.temperature["@attributes"].value}°C</Text>
+                                <Text style={s.temp}>{group.data.temperature["@_value"]}°C</Text>
                                 <Text style={s.dayTime}>{group.text}</Text>
                             </View>
                         ))

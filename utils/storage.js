@@ -16,39 +16,49 @@ export const removeCity = async  ()=>{
     await AsyncStorage.removeItem("city")
 }
 
+const CITY_CODES_KEY = 'city_codes';
 
 
-
-// export const setSavedCity = async (code) => {
-//     try {
-//         await AsyncStorage.setItem('cityCode', JSON.stringify({ 'cityCode': code }))
-
-//     } catch (e) {
-//         console.error(e)
-//     }
-// }
-
-
-// export const getSavedCity = async () => {
-//     try {
-
-//         const cityCode = JSON.parse(await AsyncStorage.getItem('cityCode'))
-//         return cityCode
-
-//     } catch (e) {
-//         console.error(e)
-//         return false
-//     }
-// }
-
-// export const clearCity = async ()=>{
-//     try {
-//         await AsyncStorage.setItem('cityCode',null)
-
-//     } catch (e) {
-//         console.error(e)
-//     }
-
-// }
+export const saveCityCode = async (code) => {
+  try {
+    const codes = await getCityCodes();
+    if (!codes.includes(code)) {
+      const updatedCodes = [...codes, code];
+      await AsyncStorage.setItem(CITY_CODES_KEY, JSON.stringify(updatedCodes));
+    }
+  } catch (error) {
+    console.error('Failed to save city code:', error);
+  }
+};
 
 
+export const getCityCodes = async () => {
+  try {
+    const codes = await AsyncStorage.getItem(CITY_CODES_KEY);
+    return codes ? JSON.parse(codes) : [];
+  } catch (error) {
+    console.error('Failed to get city codes:', error);
+    return [];
+  }
+};
+
+export const deleteCityCode = async (code) => {
+  try {
+    const codes = await getCityCodes();
+    const updatedCodes = codes.filter((item) => item !== code);
+    await AsyncStorage.setItem(CITY_CODES_KEY, JSON.stringify(updatedCodes));
+  } catch (error) {
+    console.error('Failed to delete city code:', error);
+  }
+};
+
+
+export const cityCodeExists = async (code) => {
+  try {
+    const codes = await getCityCodes();
+    return codes.includes(code);
+  } catch (error) {
+    console.error('Failed to check if city code exists:', error);
+    return false;
+  }
+};

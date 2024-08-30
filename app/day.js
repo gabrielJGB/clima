@@ -35,7 +35,7 @@ const Day = () => {
                 <HourlyForecast data={data} />
                 {
                   i < forecast.length-1 &&
-                  <Divider style={{backgroundColor:colors.card100,height:1}}  />
+                  <Divider style={{backgroundColor:colors.background,height:3}}  />
                 }
               </View>
             ))
@@ -64,7 +64,7 @@ const s = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 2,
-    backgroundColor: "#0f0f0f"
+    backgroundColor: colors.card
 
   },
   headerText: {

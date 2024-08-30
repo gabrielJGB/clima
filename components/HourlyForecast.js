@@ -5,14 +5,14 @@ import { Icon } from 'react-native-paper'
 
 const HourlyForecast = ({ data }) => {
 
-  const from = data["@attributes"].from.split("T")[1].slice(0, 5)
-  const to = data["@attributes"].to.split("T")[1].slice(0, 5)
-  const temp = data.temperature["@attributes"].value
-  const symbol = data.symbol["@attributes"].number
-  const condition = data.symbol["@attributes"].name
-  const precipitation = data.precipitation["@attributes"].value
-  const wind = data.windDirection["@attributes"]
-  const pressure = data.pressure["@attributes"].value
+  const from = data["@_from"].split("T")[1].slice(0, 5)
+  const to = data["@_to"].split("T")[1].slice(0, 5)
+  const temp = data.temperature["@_value"]
+  const symbol = data.symbol["@_number"]
+  const condition = data.symbol["@_name"]
+  const precipitation = data.precipitation["@_value"]
+  const wind = data.windDirection
+  const pressure = data.pressure["@_value"]
   
 
   return (
@@ -34,7 +34,7 @@ const HourlyForecast = ({ data }) => {
 
         <View style={s.wcontainer}>
           <Icon source="weather-windy" size={12} color='white' />
-          <Text style={s.wtext}>{wind.name}</Text>
+          <Text style={s.wtext}>{wind["@_name"]}</Text>
         </View>
 
         <View style={s.wcontainer}>

@@ -85,7 +85,7 @@ const s = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         gap: 2,
-        backgroundColor: "#0f0f0f"
+        backgroundColor: colors.card
     },
     headerText: {
         color: colors.text,

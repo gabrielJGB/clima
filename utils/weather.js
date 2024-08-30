@@ -1,7 +1,7 @@
 export const agruparPorDia = (data) => {
     return data.reduce((acumulador, item) => {
 
-        const fecha = item["@attributes"].from.split("T")[0];
+        const fecha = item["@_from"].split("T")[0];
 
 
         if (!acumulador[fecha]) {
@@ -23,7 +23,7 @@ export const findMinMaxTemperature = (dataArray) =>{
     let maxTemp = -Infinity;
 
     dataArray.forEach(item => {
-        const tempValue = parseFloat(item.temperature["@attributes"].value);
+        const tempValue = parseFloat(item.temperature["@_value"]);
         
         if (tempValue < minTemp) {
             minTemp = tempValue;
@@ -45,7 +45,7 @@ export const  sumPrecipitation = (dataArray) => {
     let totalPrecipitation = 0;
 
     dataArray.forEach(item => {
-        const precipValue = parseFloat(item.precipitation["@attributes"].value);
+        const precipValue = parseFloat(item.precipitation["@_value"]);
         totalPrecipitation += precipValue;
     });
 
