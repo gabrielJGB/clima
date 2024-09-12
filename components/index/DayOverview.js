@@ -14,7 +14,7 @@ const DayOverview = ({ dayData }) => {
     const [groups, setGroups] = useState(false)
     const maxMin = findMinMaxTemperature(dayData.weather)
     const precipitation = sumPrecipitation(dayData.weather)
-    const date = formatHeaderDate(dayData.date.split("T")[0].replaceAll("-","/"))
+    const date = formatHeaderDate(dayData.date.split("T")[0].replaceAll("-", "/"))
 
     const arr = [
 
@@ -40,6 +40,7 @@ const DayOverview = ({ dayData }) => {
         let groups = []
         arr.forEach((elem, i) => {
             let data = dayData.weather.find(item => item["@_from"].split("T")[1] === elem.time)
+
             if (data != undefined)
                 groups.push({
                     time: elem.time,
@@ -61,11 +62,20 @@ const DayOverview = ({ dayData }) => {
 
 
         <TouchableRipple
-            
-            rippleColor={"white"}
-            onPress={() => push({pathname:"day",params: {forecastString:JSON.stringify(dayData.weather),date }})}
+
+            rippleColor={colors.card200}
+            onPress={() => push(
+                {
+                    pathname: "day",
+                    params: {
+                        forecastString: JSON.stringify(dayData.weather),
+                        title: dayData.title,
+                        date,
+                    }
+                })}
+
             unstable_pressDelay={80}
-            style={{ borderRadius: 12}}
+            style={{ borderRadius: 12 }}
             borderless
         >
 
@@ -85,8 +95,8 @@ const DayOverview = ({ dayData }) => {
                         </View>
                     </View>
                     <View style={s.headerBottom}>
-                        <Text style={s.bottomText}>Max: <Text style={s.max}>{maxMin.maxTemp}</Text>°C  </Text>
-                        <Text style={s.bottomText}>Min: <Text style={s.min}>{maxMin.minTemp}</Text>°C</Text>
+                        <Text style={s.bottomText}><Text style={[s.maxMin, s.max]}>{maxMin.maxTemp.value}°</Text> /</Text>
+                        <Text style={s.bottomText}><Text style={[s.maxMin, s.min]}>{maxMin.minTemp.value}°</Text></Text>
                     </View>
                 </View>
 
@@ -97,7 +107,7 @@ const DayOverview = ({ dayData }) => {
                                 <View style={s.img}>
                                     <Image source={{ uri: `https://www.meteobahia.com.ar/imagenes/new/${group.data.symbol["@_number"]}.png` }} style={s.img} />
                                 </View>
-                                <Text style={s.temp}>{group.data.temperature["@_value"]}°C</Text>
+                                <Text style={s.temp}>{group.data.temperature["@_value"]}°</Text>
                                 <Text style={s.dayTime}>{group.text}</Text>
                             </View>
                         ))
@@ -146,7 +156,8 @@ const s = StyleSheet.create({
     groupContainer: {
         flexDirection: "row",
         justifyContent: "space-around",
-        paddingVertical:6,
+        paddingTop:6,
+        paddingBottom: 6,
     },
     img: {
         width: IMG_SIZE,
@@ -167,15 +178,15 @@ const s = StyleSheet.create({
         flexDirection: "row",
         gap: 7
     },
-    min: {
-        fontSize: 17,
-        fontWeight: "500",
-        color: "#00aaff",
+    maxMin: {
+        fontSize: 18,
+        fontWeight: "500",  
     },
-    max: {
-        fontSize: 17,
-        fontWeight: "500",
-        color: "#ff0e12"
+    min: {
+        color: "#5ad7ff",
+    },
+    max: { 
+        color: "#ff3b3b", 
     },
     bottomText: {
         fontSize: 12,

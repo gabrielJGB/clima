@@ -2,13 +2,16 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { colors } from '../constants/colors';
 import { formatHeaderDate } from '../utils/time';
+import sunset from '../assets/sunset.png'
+import sunrise from '../assets/sunrise.png'
 
-const CurrentForecast = ({ currentForecast }) => {
+const CurrentForecast = ({ currentForecast,sun }) => {
+
 
 
   const formatWind = (cc) => {
-
-    if (cc.wind_dir === "")
+ 
+    if (cc.wind_dir === "" || !cc.wind_dir)
       return currentForecast.cc.wind_sp
     else
       return `${cc.wind_dir} a ${cc.wind_sp} km/h`
@@ -34,7 +37,7 @@ const CurrentForecast = ({ currentForecast }) => {
           <View style={s.container}>
             <Text style={s.date}>{formatHeaderDate(currentForecast.cc.date)}</Text>
 
-            
+
 
             <View style={s.data}>
               <View style={s.left}>
@@ -48,8 +51,23 @@ const CurrentForecast = ({ currentForecast }) => {
               </View>
 
               <View style={s.right}>
-                <Image source={{ uri: `https://www.meteobahia.com.ar/imagenes/new/${currentForecast.cc.icon}.png` }} style={s.img} />
-                <Text style={s.condition}>{currentForecast.cc.condition}</Text>
+
+                <View style={s.conditionContainer}>
+                  <Image source={{ uri: `https://www.meteobahia.com.ar/imagenes/new/${currentForecast.cc.icon}.png` }} style={s.img} />
+                  <Text style={s.condition}>{currentForecast.cc.condition}</Text>
+                </View>
+
+                <View style={s.sun}>
+                  <View style={s.sunItem}>
+                    <Image source={sunrise} style={s.sunImg} />
+                    <Text style={s.sunText}>{sun.sunrise}</Text>
+                  </View>
+                  <View style={s.sunItem}>
+                    <Image source={sunset} style={s.sunImg} />
+                    <Text style={s.sunText}>{sun.sunset}</Text>
+                  </View>
+                </View>
+
               </View>
             </View>
           </View>
@@ -71,6 +89,7 @@ const s = StyleSheet.create({
     flexDirection: "column",
     gap: 12,
     padding: 12,
+    paddingBottom:16,
     borderRadius: 12,
     backgroundColor: colors.card,
 
@@ -89,21 +108,24 @@ const s = StyleSheet.create({
   },
   data: {
     flexDirection: "row",
-    justifyContent: "space-around"
+    justifyContent: "space-evenly"
   },
   left: {
+    maxWidth:"50%",
     flexDirection: "column",
     justifyContent: "center",
     gap: 2
   },
   right: {
+    
+    maxWidth:"42%",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 5
+    justifyContent: "space-between",
+    gap: 10
   },
   temp: {
-    fontSize: 40,
+    fontSize: 45,
     fontWeight: "bold",
     color: colors.text,
   },
@@ -117,6 +139,12 @@ const s = StyleSheet.create({
     color: colors.text100,
     fontWeight: "500",
   },
+  conditionContainer:{
+    
+    flexDirection:"column",
+    alignItems:"center",
+    justifyContent:"center"
+  },
   condition: {
 
     fontSize: 14,
@@ -124,11 +152,33 @@ const s = StyleSheet.create({
     color: colors.text,
   },
   img: {
-    width: 60,
-    height: 60,
+    width: 62,
+    height: 62,
   },
   text: {
     color: "white",
     fontSize: 12,
+  },
+  sun: {
+    flexDirection: "row",
+    gap:12,
+    alignItems: "flex-end",
+    justifyContent:"flex-end",
+     
+    
+  },
+  sunImg:{
+    width:25,
+    height:25,
+  },
+  sunItem: {
+    flexDirection: "column",
+    alignItems:"center",
+  },
+  sunText:{
+    color:"white",
+    fontSize:9,
+    fontWeight:"500"
   }
+
 })

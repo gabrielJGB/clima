@@ -4,12 +4,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FirstView from "../components/index/FirstView";
 import Main from "../components/index/Main";
 import { useStateContext } from "../context/StateProvider";
+import { PaperProvider, Portal, Snackbar } from "react-native-paper";
 
 
 export default function Page() {
 
 
-  const { selectedCity, setSelectedCity, setRefresh } = useStateContext()
+  const { selectedCity, setSelectedCity, refresh,setRefresh } = useStateContext()
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -42,33 +43,43 @@ export default function Page() {
   }, [selectedCity])
 
   if (loading)
-    return <ActivityIndicator size="large" color="white" />;
+    return <></>;
 
 
   return (
-    <ScrollView refreshControl={
-      <RefreshControl refreshing={false} onRefresh={() => setRefresh(prev => !prev)} />
-    }
-    >
-      <View style={s.container}>
-
-
-        {
-          selectedCity ?
-            <Main />
-            :
-            <FirstView />
+    <PaperProvider>
+      <ScrollView refreshControl={
+        <RefreshControl refreshing={false} onRefresh={() => {
+          setError(false)
+          setRefresh(prev => !prev)} 
         }
-
-
-      </View>
-      {
-        selectedCity &&
-        <Text onPress={() => { Linking.openURL("https://www.meteobahia.com.ar") }} style={s.credits}>
-          Fuente: <Text style={[s.credits,{textDecorationLine:"underline"}]}> www.meteobahia.com.ar</Text>
-        </Text>
+          />
       }
-    </ScrollView>
+      >
+        <View style={s.container}>
+
+
+          {
+            selectedCity ?
+              <Main />
+              :
+              <FirstView />
+          }
+
+
+        </View>
+        {
+          selectedCity &&
+          <Text onPress={() => { Linking.openURL("https://www.meteobahia.com.ar") }} style={s.credits}>
+            Fuente: <Text style={[s.credits, { textDecorationLine: "underline" }]}> www.meteobahia.com.ar</Text>
+          </Text>
+        }
+      </ScrollView>
+
+
+
+
+    </PaperProvider>
   );
 }
 
@@ -87,7 +98,7 @@ const s = StyleSheet.create({
     padding: 7,
     bottom: 0,
     textAlign: "center",
-    color: "#00578d"
+    color: "#007cc9"
   }
 
 });

@@ -4,6 +4,7 @@ export const colors = {
     card: '#001d33',
     card100: '#273337',
     card200:'#1373ab',
+    card300:'#103e59',
     text: '#ffffff',
     text100: '#a1a1a1',
     border: 'rgb(39, 39, 41)',

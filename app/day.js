@@ -1,5 +1,5 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { useRef } from 'react'
 import { useGlobalSearchParams, useLocalSearchParams, useRouter } from 'expo-router'
 import { ActivityIndicator, Divider, IconButton } from 'react-native-paper'
 import { colors } from '../constants/colors'
@@ -9,11 +9,9 @@ import HourlyForecast from '../components/HourlyForecast'
 
 const Day = () => {
   const { back } = useRouter()
-  const { forecastString,date } = useLocalSearchParams()
-
+  const { forecastString,date,title } = useLocalSearchParams()
   const forecast = JSON.parse(forecastString)
 
-  
 
   if (!forecast)
     return <ActivityIndicator size="large" color="white" style={{ marginTop: 50 }} />;
@@ -22,11 +20,12 @@ const Day = () => {
     <View >
       <View style={s.header}>
         <IconButton icon="arrow-left" iconColor="white" size={22} onPress={() => back()} />
-        <Text style={s.headerText}>{date}</Text>
+        <Text style={s.headerText}>{title}</Text> 
 
       </View>
 
       <ScrollView>
+
         <View style={s.container}>
 
           {
@@ -35,13 +34,14 @@ const Day = () => {
                 <HourlyForecast data={data} />
                 {
                   i < forecast.length-1 &&
-                  <Divider style={{backgroundColor:colors.background,height:3}}  />
+                  <Divider style={{backgroundColor:colors.background,height:4}}  />
                 }
               </View>
             ))
           }
 
         </View>
+
       </ScrollView>
     </View>
   )
@@ -51,6 +51,7 @@ export default Day
 
 const s = StyleSheet.create({
   container: {
+    
     flexDirection: "column",
     gap: 1,
     marginTop: 12,

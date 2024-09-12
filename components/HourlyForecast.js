@@ -3,6 +3,66 @@ import React from 'react'
 import { colors } from '../constants/colors'
 import { Icon } from 'react-native-paper'
 
+const ICON = 11
+
+const getWindText = (dir) => {
+
+  switch (dir) {
+    case "N":
+      return "Norte";
+    case "S":
+      return "Sur";
+    case "E":
+      return "Este";
+    case "O":
+      return "Oeste";
+
+  }
+
+}
+
+const getBgColor = (value, isRain) => {
+
+  let limits = isRain ? [0, 10, 30, 40, 52, 60] : [0, 23, 32, 39, 55, 60]
+
+
+  if (value > limits[0] && value < limits[1])
+    return "#00b500"
+
+  else if (value >= limits[1] && value < limits[2])
+    return "#abff00"
+
+  else if (value >= limits[2] && value < limits[3])
+    return "#FFFF00"
+
+  else if (value >= limits[3] && value < limits[4])
+    return "#FFBF00"
+
+  else if (value >= limits[4] && value < limits[5])
+    return "#FF8000"
+
+  else if (value >= limits[5])
+    return "#FF0000"
+
+
+
+}
+
+
+const Bar = ({ value, parameter }) => {
+
+  
+  const valueColor = value
+  value = value >= 100 ? 100 : value
+  value = parameter === "rain" && value > 0 ? (Math.log(value + 1) * (value<50?10:15)) : value
+
+  return (
+    <View style={s.bar}>
+      <View style={[s.barWidth, { width: `${value.toFixed()}%`, backgroundColor: getBgColor(valueColor, parameter === "rain") }]}></View>
+    </View>
+  )
+}
+
 const HourlyForecast = ({ data }) => {
 
   const from = data["@_from"].split("T")[1].slice(0, 5)
@@ -13,7 +73,8 @@ const HourlyForecast = ({ data }) => {
   const precipitation = data.precipitation["@_value"]
   const wind = data.windDirection
   const pressure = data.pressure["@_value"]
-  
+
+
 
   return (
     <View style={s.container}>
@@ -31,18 +92,35 @@ const HourlyForecast = ({ data }) => {
 
 
       <View style={s.weatherData}>
-
         <View style={s.wcontainer}>
-          <Icon source="weather-windy" size={12} color='white' />
-          <Text style={s.wtext}>{wind["@_name"]}</Text>
+          <View style={s.wheader}>
+            {/* <Text style={s.wtitle}>LLUVIA</Text> */}
+            <Icon source="water" size={ICON} color='white' />
+            <Text style={s.wtext}>{precipitation === "0.0" ? "0" : precipitation} mm</Text>
+          </View>
+
+          <Bar
+            value={parseFloat(precipitation)}
+            parameter={"rain"}
+          />
         </View>
 
+
         <View style={s.wcontainer}>
-          <Icon source="water" size={12} color='white' />
-          <Text style={s.wtext}>{precipitation === "0.0"?"0":precipitation} mm</Text>
+
+          <View style={s.wheader}>
+            {/* <Text style={s.wtitle}>VIENTO</Text> */}
+            <Icon source="weather-windy" size={ICON} color='white' />
+            <Text style={s.wtext}>{wind["@_name"].split(" del ")[0]}  {wind["@_code"][0]}</Text>
+          </View>
+
+          <Bar
+            value={parseInt(wind["@_name"].split(" km")[0])}
+            parameter={"wind"}
+          />
+
         </View>
 
- 
 
       </View>
     </View>
@@ -55,8 +133,9 @@ const s = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-evenly",
     padding: 6,
-    paddingVertical: 15,
+    paddingVertical: 17,
 
   },
   timeContainer: {
@@ -65,10 +144,10 @@ const s = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 7,
-    
+
   },
   timeText: {
-    fontSize:12,
+    fontSize: 12,
     color: colors.text,
     textAlign: "center",
   },
@@ -85,7 +164,7 @@ const s = StyleSheet.create({
     height: 30,
   },
   symbolContainer: {
-    width: "30%",
+    width: "25%",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
@@ -93,28 +172,63 @@ const s = StyleSheet.create({
     marginRight: 4,
   },
   condition: {
-    width:"90%",
+    fontWeight: "400",
     textAlign: "center",
     color: colors.text,
     fontSize: 11,
-    lineHeight:15,
+    lineHeight: 15,
   },
-  weatherData:{
-    width:"30%",
-    flexDirection:"column",
-    justifyContent:"center",
-    gap:2,
-    alignItems:"flex-start"
-    
+  weatherData: {
+    // backgroundColor:"black",
+    flexDirection: "column",
+
+    justifyContent: "center",
+    borderRadius: 7,
+    alignItems: "flex-start",
+
+
   },
-  wcontainer:{
-    flexDirection:"row",
-    alignItems:"center",
-    gap:3,
+  wcontainer: {
+    borderWidth: 0,
+    borderColor: colors.background,
+    padding: 4,
+
+    flexDirection: "column",
+    gap: 0,
+
   },
-  wtext:{
-    fontSize:10,
-    fontWeight:"500",
-    color:colors.text100
+  wdata: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 0,
+
+  },
+  wtext: {
+    fontSize: 10,
+    fontWeight: "500",
+    color: colors.text100
+  },
+  bar: {
+    width: 80,
+    height: 3,
+    borderRadius: 4,
+    backgroundColor: colors.background,
+  },
+  barWidth: {
+    height: "100%",
+    backgroundColor: "white",
+    borderRadius: 4
+  },
+  wtitle: {
+    color: "white",
+    fontWeight: "500",
+    fontSize: 10,
+
+  },
+  wheader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+    marginBottom: 1
   }
 })

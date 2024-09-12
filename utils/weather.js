@@ -21,22 +21,33 @@ export const agruparPorDia = (data) => {
 export const findMinMaxTemperature = (dataArray) =>{
     let minTemp = Infinity;
     let maxTemp = -Infinity;
+    let minPos = false;
+    let maxPos = false;
 
-    dataArray.forEach(item => {
+    dataArray.forEach((item,i) => {
         const tempValue = parseFloat(item.temperature["@_value"]);
         
         if (tempValue < minTemp) {
             minTemp = tempValue;
+            minPos = i;
         }
         
         if (tempValue > maxTemp) {
             maxTemp = tempValue;
+            maxPos = i;
         }
     });
 
     return {
-        minTemp: minTemp,
-        maxTemp: maxTemp
+        minTemp: {
+            value:minTemp,
+            pos:minPos,
+        },
+        maxTemp: {
+            value:maxTemp,
+            pos:maxPos
+        },
+
     };
 }
 

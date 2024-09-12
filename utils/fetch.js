@@ -15,6 +15,7 @@ const convertXMLToJSON = (xml) => {
 
 
 export const fetchXML = async (url) => {
+    //  ?_=${new Date().getTime()}
     
     try {
         const res = await fetch(`${proxyURL}${encodeURIComponent(url)}?_=${new Date().getTime()}`)

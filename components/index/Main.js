@@ -2,7 +2,7 @@ import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useStateContext } from '../../context/StateProvider'
 import { fetchXML } from '../../utils/fetch'
-import { ActivityIndicator, Icon, IconButton, TouchableRipple } from 'react-native-paper'
+import { ActivityIndicator, Icon, IconButton, Portal, Snackbar, TouchableRipple } from 'react-native-paper'
 import { agruparPorDia } from '../../utils/weather'
 import DayOverview from './DayOverview'
 import { formatearFecha } from '../../utils/time'
@@ -16,31 +16,43 @@ import { cityCodeExists, deleteCityCode, saveCityCode } from '../../utils/storag
 const Main = () => {
 
   const { push } = useRouter()
-  const { selectedCity, refresh } = useStateContext()
+  const { selectedCity, refresh,meteogram, setMeteogram } = useStateContext()
   const [dailyForecast, setDailyForecast] = useState(false)
   const [currentForecast, setCurrentForecast] = useState(false)
   const [error, setError] = useState(false)
   const [saveIcon, setSaveIcon] = useState("star-outline")
+  const [visible, setVisible] = useState(false);
+  
+  const [snackText, setSnackText] = useState("")
+  const [sun, setSun] = useState(false)
 
+  const onToggleSnackBar = () => {
+    setVisible(!visible)
+  };
 
+  const onDismissSnackBar = () => setVisible(false);
 
 
   const handleSave = async () => {
 
-
-    if (await cityCodeExists(selectedCity))
+    if (await cityCodeExists(selectedCity)) {
       await deleteCityCode(selectedCity)
-
-    else
+      setSnackText("Ubicación borrada")
+    }
+    else {
       await saveCityCode(selectedCity)
+      setSnackText("Ubicación guardada")
+    }
 
     await checkIcon()
+    onToggleSnackBar()
 
   }
 
 
   const checkIcon = async () => {
     const exists = await cityCodeExists(selectedCity)
+
     if (exists) {
       setSaveIcon("star")
     } else {
@@ -53,6 +65,22 @@ const Main = () => {
 
   }, [selectedCity]))
 
+
+  //   let meteogram = tabular.map(elem=>({
+
+  //     "temperature":parseFloat(elem.temperature["@_value"]),
+  //     "precipitation":parseFloat(elem.precipitation["@_value"]),
+  //     "icon":`https://www.meteobahia.com.ar/imagenes/new/${elem.symbol["@_number"]}.png`,
+  //     "wind":{
+  //         "direction":elem.windDirection["@_code"],
+  //         "value":parseFloat(elem.windDirection["@_name"].split(" km/h")[0])
+  //     },
+  //     "time":{
+  //         "from":new Date(elem["@_from"]),
+  //         "to":new Date(elem["@_to"]),
+  //     }
+
+  // }))
 
   useEffect(() => {
 
@@ -70,12 +98,17 @@ const Main = () => {
           const data = res.weatherdata
           const agrupadosPorDia = agruparPorDia(data.forecast.tabular.time)
           const resultadoFinal = Object.values(agrupadosPorDia)
+          const sunrise = data.sun["@_rise"].split("T")[1].slice(0, 5)
+          const sunset = data.sun["@_set"].split("T")[1].slice(0, 5)
+          setSun({ sunrise, sunset })
+
+          setMeteogram(resultadoFinal)
 
           const x = resultadoFinal.map((day, i) => {
             return {
               weather: day,
               title: formatearFecha(day[0]["@_from"]),
-              date: day[0]["@_from"]
+              date: day[0]["@_from"],
             }
           })
           x.pop()
@@ -90,7 +123,7 @@ const Main = () => {
         .catch(error => setError(error.message))
 
     }
-  }, [selectedCity])
+  }, [selectedCity, refresh])
   // }, [selectedCity, refresh])
 
 
@@ -111,25 +144,34 @@ const Main = () => {
       <View style={s.header}>
         <IconButton icon={saveIcon} iconColor='white' size={27} onPress={handleSave} />
         <View style={s.placeContainer}>
-          <Text style={s.place}>{currentForecast.Station.name}, </Text>
-          <Text style={s.place}>{currentForecast.Station.province}</Text>
+          <Text style={s.place}>{currentForecast.Station.name.replace("Parana", "Paraná")}</Text>
+          {/* <Text style={s.place}>{currentForecast.Station.province}</Text> */}
         </View>
         <IconButton icon="magnify" iconColor='white' size={25} onPress={() => { push("search") }} />
       </View>
 
       {
         currentForecast &&
-        <CurrentForecast currentForecast={currentForecast} />
+        <CurrentForecast currentForecast={currentForecast} sun={sun} />
       }
 
-
-
-      <TouchableRipple rippleColor="#51676d" borderless unstable_pressDelay={80} style={{ borderRadius: 12 }} onPress={() => push("satellite")}>
-        <View style={{ backgroundColor: colors.card, borderRadius: 12, paddingVertical: 13, paddingHorizontal: 12, flexDirection: "row", alignItems: "center", gap: 5 }}>
-          <Icon source="satellite-variant" color="white" size={22} />
-          <Text style={{ color: "white", fontSize: 13 }}>Imagenes satelitales</Text>
+      <TouchableRipple rippleColor={colors.card200} borderless unstable_pressDelay={80} style={{ borderRadius: 12 }} onPress={() => push("satellite")}>
+        <View style={{ backgroundColor: colors.card, borderRadius: 12, paddingVertical: 11, paddingHorizontal: 12, flexDirection: "row", alignItems: "center", gap: 5 }}>
+          <Icon source="space-station" color="white" size={22} />
+          <Text style={{ color: "white", fontSize: 13 }}>Imágenes satelitales</Text>
         </View>
       </TouchableRipple>
+
+      <TouchableRipple rippleColor={colors.card200} borderless unstable_pressDelay={80} style={{ borderRadius: 12 }} onPress={() => push({
+        pathname: "chart"
+      })}
+      >
+        <View style={{ backgroundColor: colors.card, borderRadius: 12, paddingVertical: 11, paddingHorizontal: 12, flexDirection: "row", alignItems: "center", gap: 5 }}>
+          <Icon source="chart-timeline-variant" color="white" size={22} />
+          <Text style={{ color: "white", fontSize: 13 }}>Meteograma</Text>
+        </View>
+      </TouchableRipple>
+
 
 
       <View style={s.overviewContainer}>
@@ -141,7 +183,21 @@ const Main = () => {
         }
       </View>
 
+      <Portal>
+        <Snackbar
 
+          visible={visible}
+          onDismiss={onDismissSnackBar}
+          duration={2000}
+          elevation={5}
+        // action={{
+        //   label: 'Cerrar',
+        //   onPress: () => { setVisible(false) },
+        // }}
+        >
+          {snackText}
+        </Snackbar>
+      </Portal>
 
     </View>
 
@@ -154,7 +210,8 @@ const s = StyleSheet.create({
   container: {
     flexDirection: "column",
     gap: 12,
-    marginBottom: 200
+    marginBottom: 200,
+
   },
   header: {
     flexDirection: "row",
@@ -173,7 +230,7 @@ const s = StyleSheet.create({
   },
   place: {
     color: "white",
-    fontSize: 19,
+    fontSize: 20,
     fontWeight: "500",
     textAlign: "center",
 
