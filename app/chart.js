@@ -126,13 +126,13 @@ const ChartPage = () => {
             max: {
                 value: temp.maxTemp.value,
                 label: date,
-                labelTextStyle:s.graphlabel,
+                labelTextStyle: s.graphlabel,
                 dataPointText: String(temp.maxTemp.value) + "°",
 
                 dataPointLabelComponent: () => (
                     <View >
                         {
-                            
+
                             <Image source={{ uri: `https://www.meteobahia.com.ar/imagenes/new/${elem[temp.maxTemp.pos].symbol["@_number"]}.png` }} style={s.img} />
 
                         }
@@ -143,7 +143,7 @@ const ChartPage = () => {
             min: {
                 value: temp.minTemp.value,
                 label: date,
-                labelTextStyle:s.graphlabel,
+                labelTextStyle: s.graphlabel,
                 dataPointText: String(temp.minTemp.value) + "°",
                 dataPointLabelComponent: () => (
                     <View>
@@ -168,7 +168,7 @@ const ChartPage = () => {
         const date = formatDate(elem[0]["@_from"]).dateString2
 
         return {
-            value: mm,
+            value: mm < 1 && mm != 0 ? 2 : mm,
             label: date,
             frontColor: getBgColor(mm),
             topLabelComponent: () => (
@@ -181,7 +181,8 @@ const ChartPage = () => {
 
     tempData.pop()
     rainData.pop()
-    console.log(rainData)
+
+    const  maxValue = Math.max(...rainData.map(x=>x.value))
 
 
 
@@ -196,7 +197,7 @@ const ChartPage = () => {
 
             <ScrollView horizontal>
                 <View style={s.container}>
-                <View style={{ marginHorizontal: 12, borderRadius: 16, padding: 12, backgroundColor: colors.card }}>
+                    <View style={{ marginHorizontal: 12, borderRadius: 16, padding: 12, backgroundColor: colors.card }}>
                         <Text style={s.title}>Temperatura (°C)</Text>
                         <View style={s.textContainer}>
                             <View style={s.box}>
@@ -241,64 +242,16 @@ const ChartPage = () => {
                             dataPointsColor='#ff3b3b'
                             dataPointsColor2='#5ad7ff'
                             height={180}
-                            
-                              
+
+
                         />
                     </View>
-                    {/* <View style={{ marginHorizontal: 12, borderRadius: 16, padding: 12, backgroundColor: colors.card }}>
-                        <Text style={s.title}>Temperatura (°C)</Text>
-                        <View style={s.textContainer}>
-                            <View style={s.box}>
-                                <View style={[s.dot, { backgroundColor: '#ff3b3b' }]}></View>
-                                <Text style={s.text}>Máxima</Text>
-                            </View>
-
-                            <View style={s.box}>
-                                <View style={[s.dot, { backgroundColor: '#5ad7ff' }]}></View>
-                                <Text style={s.text}>Mínima</Text>
-                            </View>
-                        </View>
-                        <LineChart
-
-
-                            isAnimated
-                            animationDuration={800}
-
-
-                            initialSpacing={32}
-                            spacing={90}
-                            data={tempData.map(e => e.max)}
-                            data2={tempData.map(e => e.min)}
-                            curved
-                            curvature={0.2}
-                            mostNegativeValue={-6}
-                            textColor='white'
-                            textColor1="white"
-                            textShiftY={-6}
-                            textShiftX={-6}
-                            textFontSize={14}
-                            thickness={2}
-                            rulesColor={colors.background}
-                            showVerticalLines
-                            verticalLinesColor="rgba(14,164,164,0.3)"
-                            xAxisLabelTextStyle={{ color: "white", fontSize: 11 }}
-                            yAxisColor="rgba(14,164,164,0.5)"
-                            xAxisColor="rgba(14,164,164,0.5)"
-                            yAxisTextStyle={{ color: "grey", fontSize: 12 }}
-                            color1="#ff3b3b"
-                            color2='#5ad7ff'
-                            dataPointsColor='#ff3b3b'
-                            dataPointsColor2='#5ad7ff'
-                            height={180}
-                            
-                              
-                        />
-                    </View> */}
 
                     <View style={{ marginHorizontal: 12, borderRadius: 16, padding: 12, backgroundColor: colors.card }}>
                         <Text style={s.title}>Precipitación (mm)</Text>
                         <BarChart
                             data={rainData}
+                            maxValue={maxValue>60?maxValue+20:80}
                             frontColor="#177AD5"
                             yAxisTextStyle={{ color: "grey", fontSize: 12 }}
                             xAxisLabelTextStyle={{ color: "white", fontSize: 11 }}
@@ -310,7 +263,8 @@ const ChartPage = () => {
                             height={150}
                             initialSpacing={15}
                             barBorderRadius={2}
-                            spacing={60}     
+                            spacing={60}
+
 
                         />
                     </View>
@@ -348,7 +302,7 @@ const s = StyleSheet.create({
         marginTop: 20,
     },
     img: {
-        
+
         width: 18,
         height: 18,
     },
@@ -371,9 +325,9 @@ const s = StyleSheet.create({
         width: 10,
         borderRadius: 2
     },
-    graphlabel:{
-        fontSize:11,
-        color:"white",
+    graphlabel: {
+        fontSize: 11,
+        color: "white",
         textShadowColor: 'rgba(0, 0, 0, 1)',
         textShadowOffset: { width: -1, height: -1 },
         textShadowRadius: 2,

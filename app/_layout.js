@@ -6,6 +6,7 @@ import MyTheme from '../constants/MyTheme'
 import { StateProvider } from '../context/StateProvider'
 import { colors } from '../constants/colors'
 
+
 const Layout = () => {
     const [selectedCity, setSelectedCity] = useState(null)
     const [refresh, setRefresh] = useState(false)
@@ -22,10 +23,11 @@ const Layout = () => {
                         headerShown: false,
                         statusBarColor: colors.background,
                     }}
+                    
                 >
 
-                    <Stack.Screen name='index' />
-                    <Stack.Screen name='search' options={{statusBarColor:colors.card}}/>
+                    <Stack.Screen name='index'/>
+                    <Stack.Screen name='search'  options={{statusBarColor:colors.card}}/>
                     <Stack.Screen name='satellite' options={{statusBarColor:colors.card}}/>
                     <Stack.Screen name='day' options={{statusBarColor:colors.card}}/>
                     <Stack.Screen name='chart' options={{statusBarColor:colors.card}}/>

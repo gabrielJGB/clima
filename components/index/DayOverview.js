@@ -5,6 +5,7 @@ import { TouchableRipple, Card, Icon } from 'react-native-paper'
 import { colors } from '../../constants/colors'
 import { useRouter } from 'expo-router'
 import { findMinMaxTemperature, getDropsArray, sumPrecipitation } from '../../utils/weather'
+import { LineChart } from 'react-native-gifted-charts'
 
 const IMG_SIZE = 37
 
@@ -99,7 +100,7 @@ const DayOverview = ({ dayData }) => {
                         <Text style={s.bottomText}><Text style={[s.maxMin, s.min]}>{maxMin.minTemp.value}°</Text></Text>
                     </View>
                 </View>
-
+                
                 <View style={s.groupContainer}>
                     {
                         groups.map((group, i) => (
@@ -113,6 +114,8 @@ const DayOverview = ({ dayData }) => {
                         ))
                     }
                 </View>
+
+              
 
 
             </View>
@@ -156,7 +159,7 @@ const s = StyleSheet.create({
     groupContainer: {
         flexDirection: "row",
         justifyContent: "space-around",
-        paddingTop:6,
+        paddingTop: 6,
         paddingBottom: 6,
     },
     img: {
@@ -180,13 +183,13 @@ const s = StyleSheet.create({
     },
     maxMin: {
         fontSize: 18,
-        fontWeight: "500",  
+        fontWeight: "500",
     },
     min: {
         color: "#5ad7ff",
     },
-    max: { 
-        color: "#ff3b3b", 
+    max: {
+        color: "#ff3b3b",
     },
     bottomText: {
         fontSize: 12,

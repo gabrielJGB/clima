@@ -158,7 +158,7 @@ const Main = () => {
       <TouchableRipple rippleColor={colors.card200} borderless unstable_pressDelay={80} style={{ borderRadius: 12 }} onPress={() => push("satellite")}>
         <View style={{ backgroundColor: colors.card, borderRadius: 12, paddingVertical: 11, paddingHorizontal: 12, flexDirection: "row", alignItems: "center", gap: 5 }}>
           <Icon source="space-station" color="white" size={22} />
-          <Text style={{ color: "white", fontSize: 13 }}>Imágenes </Text>
+          <Text style={{ color: "white", fontSize: 13 }}>Imágenes satelitales</Text>
         </View>
       </TouchableRipple>
 
