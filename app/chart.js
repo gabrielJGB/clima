@@ -9,6 +9,7 @@ import { BarChart, LineChart } from 'react-native-gifted-charts'
 import { formatearFecha } from '../utils/time'
 import { Image } from 'expo-image'
 
+
 const formatDate = (from) => {
     const date = new Date(from)
     const days = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
@@ -113,7 +114,6 @@ const ChartPage = () => {
 
     //     }
     // })
-
 
 
 
