@@ -1,0 +1,57 @@
+export const formatHeaderDate = (dateString,includeYear) => {
+    const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+    const dateParts = dateString.split("/");
+    const year = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10) - 1; 
+    const day = parseInt(dateParts[2], 10);
+
+    const date = new Date(year, month, day);
+    const dayOfWeek = daysOfWeek[date.getDay()];
+    const monthName = months[month];
+
+    return `${dayOfWeek} ${day} de ${monthName} ${includeYear?"de "+year:""}`;
+}
+
+export const formatHeaderDate2 = (dateString,includeYear) => {
+    const daysOfWeek = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+    const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+    const dateParts = dateString.split("/");
+    const year = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10) - 1; 
+    const day = parseInt(dateParts[2], 10);
+
+    const date = new Date(year, month, day);
+    const dayOfWeek = daysOfWeek[date.getDay()];
+    const monthName = months[month];
+
+    return `${dayOfWeek} ${day}`;
+}
+
+export const  formatDayCardDate = (fechaString) => {
+    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    
+
+    const fecha = new Date(fechaString);
+    const hoy = new Date();
+    
+    
+    const diferenciaMs = fecha.setHours(0,0,0,0) - hoy.setHours(0,0,0,0);
+    const diferenciaDias = diferenciaMs / (1000 * 60 * 60 * 24);
+
+    const diaSemana = diasSemana[fecha.getDay()];
+    const diaMes = fecha.getDate();
+    const mes = String(fecha.getMonth()+1)
+
+    if (diferenciaDias === 0) {
+        return `Hoy, ${diaSemana.toLowerCase()} ${diaMes}/${mes.padStart(2,0)}`;
+    } else if (diferenciaDias === -1) {
+        return `Ayer, ${diaSemana.toLowerCase()} ${diaMes}/${mes.padStart(2,0)}`;
+    } else if (diferenciaDias === 1) {
+        return `Mañana, ${diaSemana.toLowerCase()} ${diaMes}/${mes.padStart(2,0)}`;
+    } else {
+        return `${diaSemana} ${diaMes}/${mes.padStart(2,0)}`; 
+    }
+}
